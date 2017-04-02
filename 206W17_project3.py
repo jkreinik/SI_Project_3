@@ -185,16 +185,34 @@ joined_result = cur.fetchall()
 ## Task 4 - Manipulating data with comprehensions & libraries
 
 ## Use a set comprehension to get a set of all words (combinations of characters separated by whitespace) among the descriptions in the descriptions_fav_users list. Save the resulting set in a variable called description_words.
-
+description_words = {words for x in descriptions_fav_users for words in x.split()}
 
 
 ## Use a Counter in the collections library to find the most common character among all of the descriptions in the descriptions_fav_users list. Save that most common character in a variable called most_common_char. Break any tie alphabetically (but using a Counter will do a lot of work for you...).
+count_collection = collections.Counter() 
+for x in descriptions_fav_users:
+	for i in x: 
+		count_collection.update(i)
 
+most_common_char = count_collection.most_common(1)[0][0]		
 
 
 ## Putting it all together...
 # Write code to create a dictionary whose keys are Twitter screen names and whose associated values are lists of tweet texts that that user posted. You may need to make additional queries to your database! To do this, you can use, and must use at least one of: the DefaultDict container in the collections library, a dictionary comprehension, list comprehension(s). Y
 # You should save the final dictionary in a variable called twitter_info_diction.
+twitter_info_diction = {}
+twitter_info = [("SELECT TEXT FROM Tweets INNER JOIN Users WHERE screen_name='" + name + "'") for name in screen_names]
+
+for x in twitter_info: 
+	cur.execute(x)
+	total = cur.fetchall()
+	tweets = [y[0] for y in total]
+	s_names = screen_names[twitter_info.index(x)]
+	twitter_info_diction[s_names] = tweets
+# twitter_info = ('SELECT Users.screen_name, Tweets.text FROM Users INNER JOIN Tweets ON Users.user_id = Tweets.user_id')
+# twitter_tuple = cur.fetchall()
+conn.close()
+
 
 
 
