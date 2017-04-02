@@ -131,15 +131,8 @@ for a in tweets_lst:
 	cur.execute(statement, a)
 conn.commit()		
 
-# user_lst = []
-# for x in umich_tweets:
-# 	user_tup = (x['user']['id_str'], x['user']['screen_name'], x['user']['favorites_count'], x['user']['description']) 
-# 	user_lst.append(user_tup)
 
 statement2 = 'INSERT INTO Users VALUES (?, ?, ?, ?)'
-
-# for a in user_lst: 
-# 	cur.execute(statement, a)
 
 for x in umich_tweets: 
 	people = x['entities']['user_mentions']
@@ -166,20 +159,26 @@ conn.commit()
 # All of the following sub-tasks require writing SQL statements and executing them using Python.
 
 # Make a query to select all of the records in the Users database. Save the list of tuples in a variable called users_info.
+cur.execute('SELECT * FROM Users')
+users_info = cur.fetchall()
 
 # Make a query to select all of the user screen names from the database. Save a resulting list of strings (NOT tuples, the strings inside them!) in the variable screen_names. HINT: a list comprehension will make this easier to complete!
-
+cur.execute('SELECT screen_name FROM Users')
+screen_names = [x[0] for x in cur.fetchall()] 
 
 # Make a query to select all of the tweets (full rows of tweet information) that have been retweeted more than 25 times. Save the result (a list of tuples, or an empty list) in a variable called more_than_25_rts.
-
+cur.execute('SELECT * FROM Tweets WHERE retweets > 25')
+more_than_25_rts = cur.fetchall()
 
 
 # Make a query to select all the descriptions (descriptions only) of the users who have favorited more than 25 tweets. Access all those strings, and save them in a variable called descriptions_fav_users, which should ultimately be a list of strings.
-
+cur.execute ('SELECT description FROM Users WHERE num_favs > 25')
+descriptions_fav_users = [x[0] for x in cur.fetchall()]
 
 
 # Make a query using an INNER JOIN to get a list of tuples with 2 elements in each tuple: the user screenname and the text of the tweet -- for each tweet that has been retweeted more than 50 times. Save the resulting list of tuples in a variable called joined_result.
-
+cur.execute ('SELECT Users.screen_name, Tweets.text FROM Users INNER JOIN Tweets ON Tweets.retweets > 10')
+joined_result = cur.fetchall()
 
 
 
